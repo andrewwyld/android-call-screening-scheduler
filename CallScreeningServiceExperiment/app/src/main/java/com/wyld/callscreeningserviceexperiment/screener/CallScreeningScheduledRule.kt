@@ -1,4 +1,4 @@
-package com.wyld.callscreeningserviceexperiment
+package com.wyld.callscreeningserviceexperiment.screener
 
 abstract class CallScreeningScheduledRule(
     var start: Long,

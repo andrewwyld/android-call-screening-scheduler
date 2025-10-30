@@ -1,12 +1,13 @@
-package com.wyld.callscreeningserviceexperiment
+package com.wyld.callscreeningserviceexperiment.screener
 
+import android.net.Uri
 import java.util.LinkedList
 
 class CallScreeningScheduler {
 
     val rootList: LinkedList<CallScreeningScheduledRule> = LinkedList<CallScreeningScheduledRule>()
     val defaultRule: CallScreeningRule = object: CallScreeningRule {
-        override fun permitCallFrom(): Boolean {
+        override fun permitCallFrom(handle: Uri): Boolean {
             return true
         }
     }

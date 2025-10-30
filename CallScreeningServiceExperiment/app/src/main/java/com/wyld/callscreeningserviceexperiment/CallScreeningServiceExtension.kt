@@ -7,6 +7,8 @@ import android.content.Intent
 import android.telecom.Call
 import android.telecom.CallScreeningService
 import android.telecom.Connection.*
+import com.wyld.callscreeningserviceexperiment.screener.CallScreeningRule
+import com.wyld.callscreeningserviceexperiment.screener.CallScreeningScheduler
 
 
 fun attach(context: Context): Intent {
@@ -14,6 +16,10 @@ fun attach(context: Context): Intent {
     return roleManager.createRequestRoleIntent(RoleManager.ROLE_CALL_SCREENING)
 }
 class CallScreeningServiceExtension: CallScreeningService() {
+
+    val MILLISECONDS_PER_DAY = 86400000
+
+    val scheduler: CallScreeningScheduler = CallScreeningScheduler()
 
     override fun onScreenCall(callDetails: Call.Details) {
         if (callDetails.callDirection == Call.Details.DIRECTION_INCOMING) {
@@ -26,9 +32,11 @@ class CallScreeningServiceExtension: CallScreeningService() {
     }
 
     private fun allowConditionally(callDetails: Call.Details) {
+        val rule: CallScreeningRule = scheduler.getRuleAt(callDetails.connectTimeMillis % MILLISECONDS_PER_DAY)
         respondToCall(
             callDetails,
             CallResponse.Builder()
+                .setDisallowCall(!rule.permitCallFrom(callDetails.handle))
                 .build()
         )
     }
